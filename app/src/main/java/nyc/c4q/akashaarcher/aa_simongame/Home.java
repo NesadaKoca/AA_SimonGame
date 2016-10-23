@@ -1,15 +1,15 @@
 package nyc.c4q.akashaarcher.aa_simongame;
 
-import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.util.Random;
-
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 
 public class Home extends AppCompatActivity {
     private Handler myHandler;
@@ -21,6 +21,7 @@ public class Home extends AppCompatActivity {
     public int ourStLength = 1;
     public String userString = "";
     public int userStLength = 1;
+    public String result = "";
 
 
     Random ran = new Random();
@@ -47,44 +48,83 @@ public class Home extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
+                if (timeRemaining > 0) {// this means until timeRmaining becomes zero onClick button is gonna do nothing
 
-                userString = userString + "G";
-                ourStLength = ourString.length();
-                userStLength = userString.length();
+                } else {
 
-                if (userStLength == level) {
+                    userString = userString + "G";
+                    ourStLength = ourString.length();
+                    userStLength = userString.length();
 
-                    if (ourString.equals(userString)){
+                    if (userStLength == level) {
 
-                        Toast.makeText(Home.this, "Level "+ level +" completed!", Toast.LENGTH_SHORT).show();
-                        level ++;
-                        //next Level is going to start, we are going to change some of the variables' values like they were in the beginning
-                        timeRemaining = level * 2;
-                        startCurrentString = 0;
-                        userString = "";
-                        userStLength = 1;
-                        ourString = ourString + nextChar();
-                        // next Level starts here
-                        tvLevel2.setText(""+level);
-                        turnColorsOn(ourString);
-                    }else{
+                        if (ourString.equals(userString)) {
 
-                        String result = "";
-                        for (int i = 0; i<ourString.length(); i++) {
+                            Toast.makeText(Home.this, "Level " + level + " completed!", Toast.LENGTH_SHORT).show();
+                            level++;
+                            //next Level is going to start, we are going to change some of the variables' values like they were in the beginning
+                            timeRemaining = level * 2;
+                            startCurrentString = 0;
+                            userString = "";
+                            userStLength = 1;
+                            ourString = ourString + nextChar();
+                            // next Level starts here
+                            tvLevel2.setText("" + level);
+                            turnColorsOn(ourString);
+                        } else {
 
 
-                            if (userString.charAt(i) != ourString.charAt(i)) {
+                            for (int i = 0; i < ourString.length(); i++) {
 
-                                result = result + userString.charAt(i) + " instead of " + ourString.charAt(i) + "\n";
+
+                                if (userString.charAt(i) != ourString.charAt(i)) {
+
+                                    result = result + userString.charAt(i) + " instead of " + ourString.charAt(i) + "\n";
+                                }
+
                             }
+                            result = "Game is over because you pressed: \n" + result + "\nSCORES: " + (level - 1 + "\n\n");
+                            //Alert dialog asking, showing the result and asking Play again?
+                            AlertDialog.Builder builderBal = new AlertDialog.Builder(Home.this);
+                            builderBal.setMessage(result + "Play again?")
+
+                                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+
+                                            //start again from the beginning
+                                            level = 1;
+                                            timeRemaining = level * 2;
+                                            startCurrentString = 0;
+                                            ourString = "";
+                                            ourStLength = 1;
+                                            userString = "";
+                                            userStLength = 1;
+                                            ourString = ourString + nextChar();
+
+                                            tvLevel2.setText("" + level);
+                                            turnColorsOn(ourString);
+                                        }
+                                    })
+                                    //if selected No, close the app
+
+                                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            Home.super.onBackPressed();
+                                        }
+                                    })
+
+                                    .setCancelable(false);  // it doesn't allow you to click outside the alert dialog
+
+                            AlertDialog alertBal = builderBal.create();
+                            alertBal.show();
+
 
                         }
-                        result = "Game is over because you pressed: \n" + result;
-                        Toast.makeText(Home.this, result + "\n\nSCORES: " + (level - 1), Toast.LENGTH_LONG).show();
-
                     }
-                }
 
+                }
             }
         });
 
@@ -92,39 +132,76 @@ public class Home extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-                userString = userString +  "R";
+                if (timeRemaining > 0) {// this means until timeRmaining becomes zero onClick button is gonna do nothing
 
-                ourStLength = ourString.length();
-                userStLength = userString.length();
+                } else {
+                    userString = userString + "R";
 
-                if (userStLength == level) {
+                    ourStLength = ourString.length();
+                    userStLength = userString.length();
 
-                    if (ourString.equals(userString)){
+                    if (userStLength == level) {
 
-                        Toast.makeText(Home.this, "Level "+ level +" completed!", Toast.LENGTH_SHORT).show();
-                        level ++;
-                        //next Level is going to start, we are going to change some of the variables' values like they were in the beginning
-                        timeRemaining = level * 2;
-                        startCurrentString = 0;
-                        userString = "";
-                        userStLength = 1;
-                        ourString = ourString + nextChar();
-                        // next Level starts here
-                        tvLevel2.setText(""+level);
-                        turnColorsOn(ourString);
-                    }else{
-                        String result = "";
-                        for (int i = 0; i<ourString.length(); i++) {
+                        if (ourString.equals(userString)) { //if user pressed the right colors
+
+                            Toast.makeText(Home.this, "Level " + level + " completed!", Toast.LENGTH_SHORT).show();
+                            level++;
+                            //next Level is going to start, we are going to change some of the variables' values like they were in the beginning
+                            timeRemaining = level * 2;
+                            startCurrentString = 0;
+                            userString = "";
+                            userStLength = 1;
+                            ourString = ourString + nextChar();
+                            // next Level starts here
+                            tvLevel2.setText("" + level);
+                            turnColorsOn(ourString);
+                        } else { //if user did not pressed the right colors
+                            String result = "";
+                            for (int i = 0; i < ourString.length(); i++) {
 
 
-                            if (userString.charAt(i) != ourString.charAt(i)) {
+                                if (userString.charAt(i) != ourString.charAt(i)) {
 
-                                result = result + userString.charAt(i) + " instead of " + ourString.charAt(i) + "\n";
+                                    result = result + userString.charAt(i) + " instead of " + ourString.charAt(i) + "\n";
+                                }
+
                             }
+                            result = "Game is over because you pressed: \n" + result + "\nSCORES: " + (level - 1 + "\n\n");
+                            //Alert dialog asking, showing the result and asking Play again?
+                            AlertDialog.Builder builderBal = new AlertDialog.Builder(Home.this);
+                            builderBal.setMessage(result + "Play again?")
 
+                                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+
+                                            //start again from the beginning
+                                            level = 1;
+                                            timeRemaining = level * 2;
+                                            startCurrentString = 0;
+                                            ourString = "";
+                                            ourStLength = 1;
+                                            userString = "";
+                                            userStLength = 1;
+                                            ourString = ourString + nextChar();
+                                            tvLevel2.setText("" + level);
+                                            turnColorsOn(ourString);
+                                        }
+                                    })
+                                    //if selected No, close the app
+
+                                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            Home.super.onBackPressed();
+                                        }
+                                    })
+
+                                    .setCancelable(false);  // it doesn't allow you to click outside the alert dialog
+
+                            AlertDialog alertBal = builderBal.create();
+                            alertBal.show();
                         }
-                        result = "Game is over because you pressed: \n" + result;
-                        Toast.makeText(Home.this, result + "\n\nSCORES: " + (level - 1), Toast.LENGTH_LONG).show();
                     }
                 }
             }
@@ -134,39 +211,77 @@ public class Home extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-                userString = userString +  "Y";
+                if (timeRemaining > 0) {// this means until timeRmaining becomes zero onClick button is gonna do nothing
 
-                ourStLength = ourString.length();
-                userStLength = userString.length();
+                } else {
+                    userString = userString + "Y";
 
-                if (userStLength == level) {
+                    ourStLength = ourString.length();
+                    userStLength = userString.length();
 
-                    if (ourString.equals(userString)){
+                    if (userStLength == level) {
 
-                        Toast.makeText(Home.this, "Level "+ level +" completed!", Toast.LENGTH_LONG).show();
-                        level ++;
+                        if (ourString.equals(userString)) {
 
-                        //next Level is going to start, we are going to change some of the variables' values like they were in the beginning
-                        timeRemaining = level * 2;
-                        startCurrentString = 0;
-                        userString = "";
-                        userStLength = 1;
-                        ourString = ourString + nextChar();
-                        // next Level starts here
-                        tvLevel2.setText(""+level);
-                        turnColorsOn(ourString);
-                    }else{
-                        String result = "";
-                        for (int i = 0; i<ourString.length(); i++) {
+                            Toast.makeText(Home.this, "Level " + level + " completed!", Toast.LENGTH_LONG).show();
+                            level++;
+
+                            //next Level is going to start, we are going to change some of the variables' values like they were in the beginning
+                            timeRemaining = level * 2;
+                            startCurrentString = 0;
+                            userString = "";
+                            userStLength = 1;
+                            ourString = ourString + nextChar();
+                            // next Level starts here
+                            tvLevel2.setText("" + level);
+                            turnColorsOn(ourString);
+                        } else {
+                            String result = "";
+                            for (int i = 0; i < ourString.length(); i++) {
 
 
-                            if (userString.charAt(i) != ourString.charAt(i)) {
+                                if (userString.charAt(i) != ourString.charAt(i)) {
 
-                                result = result + userString.charAt(i) + " instead of " + ourString.charAt(i) + "\n";
+                                    result = result + userString.charAt(i) + " instead of " + ourString.charAt(i) + "\n";
+                                }
                             }
+                            result = "Game is over because you pressed: \n" + result + "\nSCORES: " + (level - 1 + "\n\n");
+                            //Alert dialog asking, showing the result and asking Play again?
+                            AlertDialog.Builder builderBal = new AlertDialog.Builder(Home.this);
+                            builderBal.setMessage(result + "Play again?")
+
+                                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+
+                                            //start again from the beginning
+                                            level = 1;
+                                            timeRemaining = level * 2;
+                                            startCurrentString = 0;
+                                            ourString = "";
+                                            ourStLength = 1;
+                                            userString = "";
+                                            userStLength = 1;
+                                            ourString = ourString + nextChar();
+
+                                            tvLevel2.setText("" + level);
+                                            turnColorsOn(ourString);
+                                        }
+                                    })
+                                    //if selected No, close the app
+
+                                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            Home.super.onBackPressed();
+                                        }
+                                    })
+
+                                    .setCancelable(false);  // it doesn't allow you to click outside the alert dialog
+
+                            AlertDialog alertBal = builderBal.create();
+                            alertBal.show();
                         }
-                        result = "Game is over because you pressed: \n" + result;
-                        Toast.makeText(Home.this, result + "\n\nSCORES: " + (level - 1), Toast.LENGTH_LONG).show();
                     }
                 }
             }
@@ -176,42 +291,78 @@ public class Home extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
+                if (timeRemaining > 0) {// this means until timeRmaining becomes zero onClick button is gonna do nothing
 
-                userString = userString +  "B";
+                } else {
+                    userString = userString + "B";
 
-                ourStLength = ourString.length();
-                userStLength = userString.length();
+                    ourStLength = ourString.length();
+                    userStLength = userString.length();
 
-                if (userStLength == level) {
+                    if (userStLength == level) {
 
-                    if (ourString.equals(userString)){
+                        if (ourString.equals(userString)) {
 
-                        Toast.makeText(Home.this, "Level "+ level +" completed!", Toast.LENGTH_SHORT).show();
-                        level ++;
-                        //next Level is going to start, we are going to change some of the variables' values like they were in the beginning
-                        timeRemaining = level * 2;
-                        startCurrentString = 0;
-                        userString = "";
-                        userStLength = 1;
-                        ourString = ourString + nextChar();
-                        // next Level starts here
-                        tvLevel2.setText(""+level);
-                        turnColorsOn(ourString);
-                    }else{
-                        String result = "";
-                        for (int i = 0; i<ourString.length(); i++) {
+                            Toast.makeText(Home.this, "Level " + level + " completed!", Toast.LENGTH_SHORT).show();
+                            level++;
+                            //next Level is going to start, we are going to change some of the variables' values like they were in the beginning
+                            timeRemaining = level * 2;
+                            startCurrentString = 0;
+                            userString = "";
+                            userStLength = 1;
+                            ourString = ourString + nextChar();
+                            // next Level starts here
+                            tvLevel2.setText("" + level);
+                            turnColorsOn(ourString);
+                        } else {
+                            String result = "";
+                            for (int i = 0; i < ourString.length(); i++) {
 
 
-                            if (userString.charAt(i) != ourString.charAt(i)) {
+                                if (userString.charAt(i) != ourString.charAt(i)) {
 
-                                result = result + userString.charAt(i) + " instead of " + ourString.charAt(i) + "\n";
+                                    result = result + userString.charAt(i) + " instead of " + ourString.charAt(i) + "\n";
+                                }
                             }
+                            result = "Game is over because you pressed: \n" + result + "\nSCORES: " + (level - 1 + "\n\n");
+                            //Alert dialog asking, showing the result and asking Play again?
+                            AlertDialog.Builder builderBal = new AlertDialog.Builder(Home.this);
+                            builderBal.setMessage(result + "Play again?")
+
+                                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+
+                                            //start again from the beginning
+                                            level = 1;
+                                            timeRemaining = level * 2;
+                                            startCurrentString = 0;
+                                            ourString = "";
+                                            ourStLength = 1;
+                                            userString = "";
+                                            userStLength = 1;
+                                            ourString = ourString + nextChar();
+
+                                            tvLevel2.setText("" + level);
+                                            turnColorsOn(ourString);
+                                        }
+                                    })
+                                    //if selected No, close the app
+
+                                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            Home.super.onBackPressed();
+                                        }
+                                    })
+
+                                    .setCancelable(false);  // it doesn't allow you to click outside the alert dialog
+
+                            AlertDialog alertBal = builderBal.create();
+                            alertBal.show();
                         }
-                        result = "Game is over because you pressed: \n" + result;
-                        Toast.makeText(Home.this, result + "\n\nSCORES: " + (level - 1), Toast.LENGTH_LONG).show();
                     }
                 }
-
             }
         });
 
@@ -279,7 +430,7 @@ public class Home extends AppCompatActivity {
 
                 if (timeRemaining > 0) {
 
-                    myHandler.postDelayed(this, 1000);
+                    myHandler.postDelayed(this, 500);
                 }
             }
 
@@ -291,7 +442,7 @@ public class Home extends AppCompatActivity {
         String nextColor="";
         Random ran = new Random();
 
-        int next = ran.nextInt(3) + 1;
+        int next = ran.nextInt(4) + 1;
 
         if (next == 1){
             nextColor = "Y";
